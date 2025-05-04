@@ -64,7 +64,7 @@ sub EVENT_ITEM {
         quest::exp(60000);
     }
 
-    if (plugin::is_stage_complete($client, 'RoK', 1)) {
+    if (plugin::is_flag_complete($client, 'RoK', 1)) {
         if (plugin::check_handin(\%itemcount, 54051 => 1, 54034 => 1)) { # melee 3
             quest::summonitem(54035); # gem of victory
             quest::say("You are a far greater person than I. I must contact the League at once."); # need real text

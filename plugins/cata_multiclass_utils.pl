@@ -1,6 +1,8 @@
 sub CommonCharacterUpdate {    
     my $client = shift || plugin::val('$client');
     if ($client && $client->IsClient()) {
+        convert_old_progression_data($client);
+
         # Title Semaphore from lua scripts
         my $semaphore_title = $client->GetBucket('flag-semaphore');
         if ($semaphore_title) {
@@ -8,7 +10,7 @@ sub CommonCharacterUpdate {
             $client->DeleteBucket('flag-semaphore');
         }
         plugin::EnableTitles($client);
-        plugin::UpdateCharMaxLevel($client);
+        plugin::update_character_max_level($client);
         plugin::UpdateEoMAward($client);
         plugin::RegisterSeasonalLogin($client);
 
@@ -17,7 +19,7 @@ sub CommonCharacterUpdate {
         plugin::GrantClassesAA($client);
         plugin::GrantGeneralAA($client);
 
-        if (!$client->KeyRingCheck(22198) && plugin::is_stage_complete_2($client, 'PoP')) {
+        if (!$client->KeyRingCheck(22198) && plugin::is_flag_complete($client, 'PoP')) {
             $client->KeyRingAdd(22198);
         }
 

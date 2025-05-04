@@ -29,8 +29,7 @@ sub EVENT_CLICKDOOR {
   }
   if($doorid == 135) {
     # Let otherwise completed SoV flags allow entry instead of key
-    if (plugin::is_stage_complete_2($client, 'SoV')) {
-      quest::debug("Allowing access through SoV flag");      
+    if (plugin::is_flag_complete($client, 'SoV')) {    
       quest::movepc(108,1682,41,25.9); # Zone: veeshan
     } else {
       if (!plugin::is_eligible_for_zone($client, 'veeshan', 1)) {		

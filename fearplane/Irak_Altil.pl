@@ -28,7 +28,7 @@ sub EVENT_SAY {
 sub EVENT_ITEM {
 	#:: Match a 29010 - Mark of Atonement and a 11050 - Fiery Avenger	
 	if (plugin::check_handin(\%itemcount, 29010 => 1, 11050 => 1)) {
-		if (plugin::is_stage_complete($client, 'RoK')) {
+		if (plugin::is_flag_complete($client, 'RoK')) {
 			quest::emote("screams so loudly it echoes across the valley as the mark and flames of your holy sword touch his rotted bones. As his body twists he quiets and then speaks. 'Your selflessness has made it possible to redeem my honor. With the cleansing of my corruption your own soul has been strengthened. Your power comes from your devotion to your god and with this you have been rewarded. Remember always your purity, devotion, and why you have sacrificed. I must go now to sacrifice myself upon the spear of pain.'");
 			#:: Give a 10099 - Fiery Defender
 			$client->SummonFixedItem(2010099);

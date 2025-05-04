@@ -44,6 +44,307 @@ sub EVENT_ENTERZONE {
     }
 }
 
+sub EVENT_DEATH {
+    # Debug info remains unchanged
+    quest::debug("killer_id " . $killer_id);
+    quest::debug("killer_damage " . $killer_damage);
+    quest::debug("killer_spell " . $killer_spell);
+    quest::debug("killer_skill " . $killer_skill);
+    quest::debug("killed_entity_id " . $killed_entity_id);
+    quest::debug("combat_start_time " . $combat_start_time);
+    quest::debug("combat_end_time " . $combat_end_time);
+    quest::debug("damage_received " . $damage_received);
+    quest::debug("healing_received " . $healing_received);
+    quest::debug("killed_corpse_id " . $killed_corpse_id);
+    quest::debug("killed_x " . $killed_x);
+    quest::debug("killed_y " . $killed_y);
+    quest::debug("killed_z " . $killed_z);
+    quest::debug("killed_h " . $killed_h);
+    quest::debug("killed_merc_id " . $killed_merc_id);
+    quest::debug("killed_npc_id " . $killed_npc_id);
+
+    if ($client->IsHardcore()) {
+        my $player_name = $client->GetCleanName();
+        my $player_class = plugin::GetPrettyClassString($client);
+        my $death_zone = $zoneln; # Get the zone name where the player died
+        
+        # Arrays of announcement prefixes for variety in format - now including zone info
+        my @announcement_prefixes = (
+            "The legend of $player_name ($player_class) ends in Hardcore mode within the depths of $death_zone",
+            "$player_name ($player_class) has fallen in Hardcore mode while exploring $death_zone",
+            "$player_name ($player_class) has been defeated in Hardcore mode in the perilous realm of $death_zone",
+            "The saga of $player_name ($player_class) concludes in Hardcore mode amidst the dangers of $death_zone",
+            "$player_name ($player_class) has met their end in Hardcore mode in the wilds of $death_zone",
+            "$player_name ($player_class) has departed the mortal realm in Hardcore mode while venturing through $death_zone",
+            "The journey of $player_name ($player_class) is over in Hardcore mode in the treacherous lands of $death_zone",
+            "$player_name ($player_class) has perished in Hardcore mode within the hostile territory of $death_zone",
+            "$player_name ($player_class) has breathed their last in Hardcore mode while traversing $death_zone",
+            "The tale of $player_name ($player_class) closes in Hardcore mode during their expedition in $death_zone"
+        );
+        
+        # Alternate zone-specific formats that vary the zone placement
+        my @zone_variant_prefixes = (
+            "In the heart of $death_zone, $player_name ($player_class) has met their fate in Hardcore mode",
+            "The dangerous realm of $death_zone claims another as $player_name ($player_class) falls in Hardcore mode",
+            "Among the shadows of $death_zone, $player_name ($player_class) has been vanquished in Hardcore mode",
+            "$death_zone has become the final resting place of $player_name ($player_class) in Hardcore mode",
+            "The chronicles of $death_zone now tell of $player_name ($player_class)'s demise in Hardcore mode",
+            "Within the infamous $death_zone, $player_name ($player_class)'s adventure ends in Hardcore mode",
+            "The treacherous terrain of $death_zone has claimed $player_name ($player_class) in Hardcore mode",
+            "$death_zone will forever remember where $player_name ($player_class) fell in Hardcore mode",
+            "The spirits of $death_zone bear witness as $player_name ($player_class) perishes in Hardcore mode",
+            "Written in the stones of $death_zone is the final chapter of $player_name ($player_class) in Hardcore mode"
+        );
+
+        
+        
+        # Combine both prefix arrays for more variety
+        push(@announcement_prefixes, @zone_variant_prefixes);
+        
+        # Select a random prefix format
+        my $prefix_index = int(rand(scalar @announcement_prefixes));
+        my $announcement_prefix = $announcement_prefixes[$prefix_index];
+        
+        # Check if player killed themselves
+        if ($killer_id == $client->GetID()) {
+            # Self-death flavor text options with more variety
+            my @self_death_flavors = (
+                "succumbed to their own folly",
+                "met an untimely end by their own hand",
+                "fell victim to their own miscalculation",
+                "discovered the hard way that gravity still works",
+                "became their own worst enemy",
+                "made a fatal mistake",
+                "perished from their own recklessness",
+                "found out actions have consequences",
+                "learned a harsh lesson too late",
+                "took a risk that didn't pay off",
+                "achieved a perfect self-defeat",
+                "mastered the art of self-destruction",
+                "accidentally tested their own mortality",
+                "experimented with their own demise",
+                "found an innovative way to perish",
+                "proved that no one is immune to their own mistakes",
+                "has been betrayed by their own tactics",
+                "discovered a new way to fail spectacularly",
+                "contributed to the tome of 'what not to do'",
+                "created a cautionary tale for future adventurers"
+            );
+            
+            # Select random self-death flavor text
+            my $random_index = int(rand(scalar @self_death_flavors));
+            my $self_death_flavor = $self_death_flavors[$random_index];
+            
+            # Announce self-caused death with varied formatting
+            my $announcement = "$announcement_prefix, having $self_death_flavor!";
+            plugin::WorldAnnounce($announcement);
+        }
+        else {
+            my $killer_mob = $entity_list->GetMobID($killer_id);
+            my $killer_name = $killer_mob ? $killer_mob->GetCleanName() : "Unknown";
+            
+            # Check if death was caused by a spell
+            if ($killer_spell < 0xFFFF) {
+                # Get the spell name
+                my $spell_name = quest::getspellname($killer_spell);
+                
+                # Varied spell death descriptions
+                my @spell_death_formats = (
+                    "obliterated by $killer_name\'s $spell_name",
+                    "consumed by the arcane power of $killer_name\'s $spell_name",
+                    "reduced to ashes by $killer_name\'s devastating $spell_name",
+                    "unable to withstand $killer_name\'s potent $spell_name",
+                    "melted away under $killer_name\'s $spell_name",
+                    "vaporized by the sheer force of $killer_name\'s $spell_name",
+                    "torn apart by the energies of $killer_name\'s $spell_name",
+                    "banished from existence by $killer_name\'s $spell_name",
+                    "struck down by $killer_name\'s masterful casting of $spell_name",
+                    "consumed by the eldritch might of $killer_name\'s $spell_name"
+                );
+                
+                # Select a random spell death format
+                my $format_index = int(rand(scalar @spell_death_formats));
+                my $spell_death_format = $spell_death_formats[$format_index];
+                
+                # Announce spell-caused death
+                my $announcement = "$announcement_prefix, $spell_death_format!";
+                plugin::WorldAnnounce($announcement);
+            }
+            else {
+                # Death was caused by a skill - use more varied death descriptions
+                my %death_flavors = (
+                    # 1H Blunt (0)
+                    0 => [
+                        "crushing blow that shattered bone",
+                        "skull-cracking mace swing that echoed through the realm",
+                        "bone-shattering club strike that ended all hope",
+                        "merciless hammer blow that crushed their spirit",
+                        "brutal cudgel that found its mark with deadly precision",
+                        "mighty swing that pulverized their defenses",
+                        "thunderous mace impact that silenced their battle cry",
+                        "devastating club strike that left nothing but ruins"
+                    ],
+                    
+                    # 1H Slashing (1)
+                    1 => [
+                        "razor-sharp blade that cut through armor like paper",
+                        "deadly sword strike that severed life's thread",
+                        "vicious slash that opened their final chapter",
+                        "precise cut that found the gap in their defense",
+                        "merciless blade that drank deeply of their lifeblood",
+                        "swift sword dance that ended with a crimson flourish",
+                        "masterful stroke that proved too quick to counter",
+                        "elegant blade work that wrote their epitaph in red"
+                    ],
+                    
+                    # 2H Blunt (2)
+                    2 => [
+                        "mighty war hammer that left nothing to bury",
+                        "devastating maul that rewrote the landscape with their remains",
+                        "earth-shaking smash that sent tremors through the realm",
+                        "colossal club that flattened both armor and wearer",
+                        "bone-crushing staff that demonstrated the meaning of force",
+                        "titanic hammer blow that redefined 'pulverized'",
+                        "mountainous maul that created a new crater",
+                        "two-handed masterpiece of destruction"
+                    ],
+                    
+                    # 2H Slashing (3)
+                    3 => [
+                        "massive cleaving strike that divided both body and soul",
+                        "devastating great sword that carved a path through legend",
+                        "whirling executioner's blade that harvested their final moments",
+                        "sweeping death blow that cleared the field of resistance",
+                        "merciless beheading strike that separated glory from defeat",
+                        "gigantic blade that brought swift judgment",
+                        "cleaving arc that finished what destiny began",
+                        "enormous sword that wrote 'the end' in one stroke"
+                    ],
+                    
+                    # Archery (7)
+                    7 => [
+                        "perfectly aimed arrow that found the heart of the matter",
+                        "deadly bow shot that traveled through legend to find its mark",
+                        "piercing shaft that delivered the message of mortality",
+                        "whistling arrow to the heart that silenced all ambition",
+                        "long-range precision shot that defied both distance and fate",
+                        "arrow's flight that ended faster than prayer",
+                        "master archer's mark that closed their final chapter",
+                        "impossible shot that made history instead of missing it"
+                    ],
+                    
+                    # Backstab (8)
+                    8 => [
+                        "treacherous backstab that wrote betrayal in blood",
+                        "dagger from the shadows that ended what trust began",
+                        "assassin's blade that whispered death's greeting",
+                        "poisoned backstab that worked its treachery through the veins",
+                        "cowardly strike from behind that denied a warrior's death",
+                        "silent blade that spoke volumes in the end",
+                        "shadowy execution that came without warning",
+                        "deadly surprise that proved looking forward wasn't enough"
+                    ],
+                    
+                    # Bash (10)
+                    10 => [
+                        "thunderous shield bash that collapsed both guard and guarded",
+                        "staggering blow that knocked them from the world of the living",
+                        "crushing shield edge that created a new definition of impact",
+                        "mighty slam that echoed through the halls of legend",
+                        "brutal body check that sent them on a one-way journey",
+                        "decisive shield strike that ended all debate",
+                        "defensive weapon turned offensive masterpiece",
+                        "protective equipment that delivered terminal protection"
+                    ],             
+
+                    # Hand to Hand (28)
+                    28 => [
+                        "fierce bare-handed attack that proved weapons optional",
+                        "lightning-fast martial arts that wrote poetry in pain",
+                        "deadly pressure-point strike that stopped more than just chi",
+                        "bare-knuckled fury that pummeled through defense",
+                        "expert combat technique that found every vital weakness",
+                        "empty hand filled with deadly purpose",
+                        "martial mastery that made weapons seem redundant",
+                        "flurry of strikes that left no time for last words"
+                    ],
+                    
+                    # Kick (30)
+                    30 => [
+                        "bone-shattering kick that rearranged their skeletal structure",
+                        "deadly roundhouse that came full circle to mortality",
+                        "brutal stomp that ground ambition into dust",
+                        "crushing leg sweep that took more than just their footing",
+                        "powerful heel strike that stamped 'expired' on their journey",
+                        "lethal kick that stepped over the line between life and death",
+                        "martial footnote that closed their book for good",
+                        "strike that proved legs are weapons too"
+                    ],
+                    
+                    # 1H Piercing (36)
+                    36 => [
+                        "precise rapier thrust that found the heart of the matter",
+                        "deadly dagger plunge that pierced all pretensions",
+                        "heart-seeking blade that fulfilled its singular purpose",
+                        "surgical piercing strike that operated with terminal success",
+                        "deep puncturing wound that released their spirit to the void",
+                        "slender blade that proved width is no measure of deadliness",
+                        "pinpoint accuracy that found the vital spot",
+                        "needle-like precision that threaded between armor plates"
+                    ], 
+                    
+                    # 2H Piercing (77)
+                    77 => [
+                        "impaling spear thrust that pinned their legend to history",
+                        "devastating pike charge that ran through all resistance",
+                        "heart-piercing lance that skewered dreams and bearer alike",
+                        "massive puncture wound that created a passage for their spirit",
+                        "skewering strike that threaded them into the tapestry of fallen",
+                        "polearm precision that extended the reach of death",
+                        "piercing shaft that created a new opening in their defenses",
+                        "spear point that found the terminal weakness"
+                    ]
+                );
+                
+                # Default flavors for unknown skills with more variety
+                my @default_flavors = (
+                    "brutal attack that brooked no survival",
+                    "lethal strike that settled all accounts",
+                    "vicious assault that left no room for recovery",
+                    "deadly blow that wrote the final chapter",
+                    "merciless onslaught that overwhelmed all defense",
+                    "devastating technique that proved too advanced to counter",
+                    "fierce combat prowess that outmatched all resistance",
+                    "relentless aggression that pursued beyond hope",
+                    "savage onslaught that tore through determination",
+                    "overwhelming force that crushed both body and spirit",
+                    "perfect execution that left nothing to chance",
+                    "combat mastery that transcended their defenses",
+                    "tactical brilliance that found every weakness",
+                    "supreme demonstration of martial superiority",
+                    "unstoppable attack that defied all countermeasures"
+                );
+                
+                # Get random flavor text from the appropriate array
+                my $death_flavor;
+                if (exists $death_flavors{$killer_skill}) {
+                    my $flavor_options = $death_flavors{$killer_skill};
+                    my $random_index = int(rand(scalar @$flavor_options));
+                    $death_flavor = $flavor_options->[$random_index];
+                } else {
+                    # Select random default flavor
+                    my $random_index = int(rand(scalar @default_flavors));
+                    $death_flavor = $default_flavors[$random_index];
+                }
+                
+                # Announce skill-caused death with varied formatting
+                my $announcement = "$announcement_prefix, destroyed by $killer_name\'s $death_flavor!";
+                plugin::WorldAnnounce($announcement);
+            }
+        }
+    }
+}
+
 sub EVENT_EXP_GAIN {
     plugin::CustomEventExpGainEntry();
 }
@@ -101,16 +402,7 @@ sub EVENT_CONNECT {
     plugin::OnLoginUpdate($client);
 
     if (!$client->GetBucket("First-Login")) {
-        $client->SetBucket("First-Login", 1);
-		$client->SummonItem(18471); #A Faded Writ
-        $client->Message(263, "You find a small note in your pocket.");
-		$client->SetBucket('FirstLogin', 1);
-
-        my $name = $client->GetCleanName();
-        my $full_class_name = plugin::GetPrettyClassString($client);
-
-        plugin::WorldAnnounce("$name ($full_class_name) has logged in for the first time.");        
-        plugin::AwardSeasonalItems($client);
+        quest::settimer("first-login", 5);
     }
 
     if (plugin::MultiClassingEnabled()) {
@@ -127,6 +419,47 @@ sub EVENT_CONNECT {
 		$client->Message(4, "Your vision blurs. You lose conciousness and wake up in a familiar place.");
 		$client->MovePC(151, 185, -835, 4, 390); # Bazaar Safe Location.
 	}
+}
+
+sub EVENT_TIMER {
+    if (!$client->GetBucket("First-Login")) {
+        quest::settimer("first-login", 10);
+
+        $client->SetBucket("First-Login", 1);
+        $client->SummonItem(18471); #A Faded Writ
+        $client->Message(263, "You find a small note in your pocket.");
+        
+        my $name = $client->GetCleanName();
+        my $full_class_name = plugin::GetPrettyClassString($client);
+
+        my $solo = $client->IsSolo();
+        my $hardcore = $client->IsHardcore();
+        my $self_found = $client->IsSelfFound();
+        
+        # Build the announcement with status flags in a single set of parentheses
+        my $announcement = "$name ($full_class_name) has logged in for the first time!";
+        
+        # Create a status string with all applicable statuses
+        my @statuses;
+        if ($solo) {
+            push(@statuses, "Solo");
+        }
+        if ($self_found) {
+            push(@statuses, "Self Found");
+        }
+        if ($hardcore) {
+            push(@statuses, "Hardcore");
+        }
+        
+        # Only add the status parentheses if there are any statuses to show
+        if (scalar @statuses > 0) {
+            $announcement .= " (" . join(", ", @statuses) . ")";
+        }
+
+        plugin::WorldAnnounce($announcement);
+        plugin::AwardSeasonalItems($client);
+    }
+
 }
 
 sub EVENT_DISCONNECT {
@@ -170,13 +503,11 @@ sub EVENT_LEVEL_UP {
     }
     
     my $new_level = $client->GetLevel();
-    my $char_max_level = $client->GetBucket("CharMaxLevel");
-    
-    if ($new_level == $char_max_level) {
+    if ($new_level == $client->GetBucket("CharMaxLevel")) {
         my $name = $client->GetCleanName();
         my $full_class_name = plugin::GetPrettyClassString($client);
 
-        plugin::WorldAnnounce("$name ($full_class_name) has reached Level $new_level.");
+        plugin::WorldAnnounce("$name ($full_class_name) has reached Level $new_level!");
     }
 }
 
@@ -437,6 +768,10 @@ sub EVENT_CAST_BEGIN {
 }
 
 sub EVENT_SAY {
+    my $is_hardcore = $client->IsHardcore();
+    my $is_solo = $client->IsSolo();
+    my $is_self_found = $client->IsSelfFound();
+    quest::debug("Hardcore: [$is_hardcore], Solo: [$is_solo], Self Found: [$is_self_found]");
     if ($client->GetGM()) {
         if ($text=~/#awardtitle\s*(.*)/i) {
             $client->Message(13, "Disregard the command not recognized error.");

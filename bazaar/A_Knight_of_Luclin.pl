@@ -17,18 +17,13 @@ my @target_list = ('Kelorek`Dar',
 
 sub EVENT_SAY {
     if ($text=~/hail/i) {
-        plugin::ConvertFlags($client);
-        if (plugin::is_stage_complete($client, $stage_key)) {
+        if (plugin::is_flag_complete($client, $stage_key)) {
             plugin::YellowText("You have access to the $stage_desc.");
         } else {
-            if (plugin::is_stage_complete_2($client, $stage_key)) {
-                plugin::YellowText("You will have access to the $stage_desc when the time-lock is expired.");
-            } else {
-                plugin::NPCTell("To gain access to the $stage_desc, two paths lie before you; [hero] and [explorer].");
-            }
+            plugin::NPCTell("To gain access to the $stage_desc, two paths lie before you; [hero] and [explorer].");
         }
     }
-    elsif (!plugin::is_stage_complete($client, $stage_key)) {
+    elsif (!plugin::is_flag_complete($client, $stage_key)) {
         if ($text =~/hero/i) {
             plugin::NPCTell($hero_desc);
             plugin::list_stage_prereq($client, $stage_key);            
@@ -81,7 +76,7 @@ sub EVENT_SAY {
 sub EVENT_ITEM {
     if (plugin::check_handin(\%itemcount, $token_item => 1)) {
         foreach my $target (@target_list) {
-            plugin::SetSubflag($client, $stage_key, $target, 1);
+            plugin::unlock_stage($client, $target);
         }
 
         plugin::NPCTell("You want to call in a favor? Fine. Going forward, you will be able to access the $stage_desc.");
@@ -89,7 +84,7 @@ sub EVENT_ITEM {
 
         plugin::CommonCharacterUpdate($client);
         return;
-    } elsif (!plugin::is_stage_complete($client, $stage_key)) {
+    } elsif (!plugin::is_flag_complete($client, $stage_key)) {
         my $item1_flag = $client->GetAccountBucket("$item1-flag") || 0;
         my $item2_flag = $client->GetAccountBucket("$item2-flag") || 0;
         my $item3_flag = $client->GetAccountBucket("$item3-flag") || 0;
@@ -126,7 +121,7 @@ sub EVENT_ITEM {
 
         if ($item1_flag && $item2_flag && $item3_flag && $item4_flag) {            
             foreach my $target (@target_list) {
-                plugin::SetSubflag($client, $stage_key, $target, 1);
+                plugin::unlock_stage($client, $target);
             }
 
             plugin::NPCTell("Excellent, you have collected all of the items which I require. Going forward, you will be able to access the $stage_desc.");

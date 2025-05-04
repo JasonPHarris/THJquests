@@ -53,7 +53,7 @@ sub EVENT_ITEM {
         quest::say("Very interesting, I must get to this at once. I am sure the bones will prove most valuable in learning of the drakes as well. Take this with you once more; the protective properties are even more powerful now. Are you up to a [final task]?");
         quest::exp(60000);
     }
-    if (plugin::is_stage_complete($client, 'RoK', 1)) {
+    if (plugin::is_flag_complete($client, 'RoK', 1)) {
         if (plugin::check_handin(\%itemcount, 54037 => 1, 54047 => 1)) { # caster 3
             quest::summonitem(54038); # gem of conquest
             quest::emote("grasps the book most carefully, while the cover seems so shift and move of its own will. 'What a truly beautiful book, even as it pulls at you as though it could inspire evil in all.' Seana turns and places the book carefully in a box covered in protective symbols. 'Thank you very much for all of your assistance. Please rest, I have much work to do informing the League and our city of these developments.");

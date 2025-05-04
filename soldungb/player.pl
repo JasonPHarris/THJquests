@@ -22,7 +22,7 @@ sub EVENT_ENTERZONE {
 	$bindy = $client->GetBindY;
 	$bindz = $client->GetBindZ;
 	
-	if (!plugin::is_stage_complete($client, 'FNagafen')) {
+	if (!plugin::is_flag_complete($client, 'FNagafen')) {
 		$client->Message(7, "You don't belong here!");
 		$client->MovePC($bind, $bindx, $bindy, $bindz, $bindh);
 	}
