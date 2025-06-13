@@ -33,6 +33,7 @@ end
 
 -- === Helper ===
 local function MovePlayerGroupOrRaid(player, zone_id, instance_id, x, y, z, h)
+  return
   if not player or not player:IsClient() then return end
   local client = player:CastToClient()
   local group  = client:GetGroup()
@@ -57,6 +58,7 @@ function event_spawn(e)
 end
 
 function event_say(e)
+  return
   local s = state()
 
   if e.message:findi("hail") then
@@ -95,6 +97,7 @@ function event_say(e)
 end
 
 function event_timer(e)
+  return
   local s = state()
 
   if e.timer == "spawn_wave" then
