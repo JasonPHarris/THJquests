@@ -49,7 +49,9 @@ sub is_eligible_for_zone {
 
     return 1 if $client->GetGM();
 
-    if ($client->IsZoneUnlockedByProgression($zone_name)) {
+    my $zone_id = quest::GetZoneID($zone_name);
+
+    if ($client->IsZoneUnlockedByProgression($zone_id)) {
         return 1;
     } else {
         if ($inform) {
