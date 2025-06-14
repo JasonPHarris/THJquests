@@ -140,7 +140,7 @@ sub convert_old_progression_data {
             }
         }
         
-        quest::delete_data($client->AccountID() . "-progress-flag-$stage");
+        # quest::delete_data($client->AccountID() . "-progress-flag-$stage");
     }
     
     update_character_max_level($client);    
