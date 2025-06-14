@@ -45,24 +45,6 @@ sub EVENT_ENTERZONE {
 }
 
 sub EVENT_DEATH {
-    # Debug info remains unchanged
-    quest::debug("killer_id " . $killer_id);
-    quest::debug("killer_damage " . $killer_damage);
-    quest::debug("killer_spell " . $killer_spell);
-    quest::debug("killer_skill " . $killer_skill);
-    quest::debug("killed_entity_id " . $killed_entity_id);
-    quest::debug("combat_start_time " . $combat_start_time);
-    quest::debug("combat_end_time " . $combat_end_time);
-    quest::debug("damage_received " . $damage_received);
-    quest::debug("healing_received " . $healing_received);
-    quest::debug("killed_corpse_id " . $killed_corpse_id);
-    quest::debug("killed_x " . $killed_x);
-    quest::debug("killed_y " . $killed_y);
-    quest::debug("killed_z " . $killed_z);
-    quest::debug("killed_h " . $killed_h);
-    quest::debug("killed_merc_id " . $killed_merc_id);
-    quest::debug("killed_npc_id " . $killed_npc_id);
-
     if ($client->IsHardcore()) {
         my $player_name = $client->GetCleanName();
         my $player_class = plugin::GetPrettyClassString($client);
