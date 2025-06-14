@@ -250,4 +250,23 @@ sub is_valid_progression_instance {
     }
 }
 
+sub get_target_door_zone {
+    my ($zonesn, $doorid, $version) = @_;
+    my $return_value = "";
+
+    my $dbh = plugin::LoadMysql();
+    my $sth = $dbh->prepare('SELECT * FROM doors WHERE zone = ? AND doorid = ? AND version = ?');
+
+    $sth->execute($zonesn, $doorid, $version);
+
+    if (my $row = $sth->fetchrow_hashref()) {
+       $return_value = $row->{dest_zone};
+    }
+
+    $sth->finish();
+    $dbh->disconnect();
+
+    return $return_value;
+}
+
 1;
