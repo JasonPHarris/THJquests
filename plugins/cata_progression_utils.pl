@@ -129,13 +129,14 @@ sub convert_old_progression_data {
                 my $clean_name = lc($objective_name);
                 $clean_name =~ s/^\s+|\s+$//g;
                 
+                quest::debug("Checking on progression stage: $clean_name");
                 if (quest::DoesProgressionStageExist($clean_name)) {
                     my $result = $client->UnlockProgressionStage($clean_name);
                     if ($result) {
-                        plugin::Debug("Converted progression stage: $clean_name");
+                        quest::debug("Converted progression stage: $clean_name");
                     }
                 } else {
-                    plugin::Debug("Warning: Stage '$clean_name' not found in new progression system");
+                     quest::debug("Warning: Stage '$clean_name' not found in new progression system");
                 }
             }
         }
