@@ -10,7 +10,7 @@ sub EVENT_SAY {
     my @buffs = ();  # Array to store buff IDs
     my $cost = 0;
 
-    if ($client->IsHardcore() || $client->IsSelfFound()) {
+    if ($client->IsHardcore()) {
         if ($text =~ /hail/i) {
             plugin::Whisper("Hail, Adventurer. I have nothing for you. Your quest to conquer this journey on your own terms prevents you from partaking of my boons.");
         }
