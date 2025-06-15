@@ -10,6 +10,13 @@ sub EVENT_SAY {
     my @buffs = ();  # Array to store buff IDs
     my $cost = 0;
 
+    if ($client->IsHardcore() || $client->IsSelfFound()) {
+        if ($text =~ /hail/i) {
+            plugin::Whisper("Hail, Adventurer. I have nothing for you. Your quest to conquer this journey on your own terms prevents you from partaking of my boons.");
+        }
+        return;
+    }
+
     if ($text =~ /hail/i) {
         $response = "Hail, Adventurer. I seek to empower your ilk for my own profit. In exchange for [exotic payment], I will enhance the power of all adventurers in the world.";
     }

@@ -753,7 +753,6 @@ sub EVENT_SAY {
     my $is_hardcore = $client->IsHardcore();
     my $is_solo = $client->IsSolo();
     my $is_self_found = $client->IsSelfFound();
-    quest::debug("Hardcore: [$is_hardcore], Solo: [$is_solo], Self Found: [$is_self_found]");
     if ($client->GetGM()) {
         if ($text=~/#awardtitle\s*(.*)/i) {
             $client->Message(13, "Disregard the command not recognized error.");
