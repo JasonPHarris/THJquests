@@ -207,6 +207,11 @@ sub EVENT_LEVEL_UP {
         return;
     }
     
+    if ($client->IsHardcore()) {
+        hardcore_level_up($client);
+        return;
+    }
+    
     my $new_level = $client->GetLevel();
     if ($new_level == $client->GetBucket("CharMaxLevel")) {
         my $name = $client->GetCleanName();

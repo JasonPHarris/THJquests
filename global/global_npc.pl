@@ -209,4 +209,8 @@ sub EVENT_KILLED_MERIT {
         }
     }
     plugin::ProcessSlayerCredit($client, $npc, $entity_list);
+
+    if ($client->IsHardcore()) {
+        plugin::hardcore_raid_kill($client, $npc->GetNPCTypeID());
+    }
 }
