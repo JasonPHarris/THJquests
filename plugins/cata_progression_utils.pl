@@ -111,6 +111,10 @@ sub update_character_max_level {
 sub convert_old_progression_data {
     my $client = shift;
 
+    if ($client->IsHardcore() || $client->IsSelfFound()) {
+        return;
+    }
+
     if ($client->GetAccountBucket("legacy_flag_converted")) {
         return;
     }
