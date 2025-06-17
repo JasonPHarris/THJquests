@@ -2,7 +2,8 @@ name: Deploy
 
 on:
   push:
-    branches: 
+    branches:
+      - staging
       - play_modes_new
       - 'deploy/*'
   create:
@@ -11,7 +12,7 @@ on:
 
 jobs:
   deploy-staging:
-    if: github.ref == 'refs/heads/staging'
+    if: github.ref == 'refs/heads/play_modes_new'
     runs-on: ubuntu-latest
     
     steps:
