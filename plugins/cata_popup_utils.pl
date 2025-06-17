@@ -150,6 +150,10 @@ sub dispatch_popup {
     my $client = shift || plugin::val('$client');
     my $popup_id = exists $popups{$popup_identifier} ? $popups{$popup_identifier} : $popup_identifier;
 
+    if ($client->IsHardcore()) {
+        return;
+    }
+
     if (!popup_exists($popup_id)) {
         return 0;
     }

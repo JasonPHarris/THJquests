@@ -26,10 +26,12 @@ sub EVENT_ENTERZONE {
 		$client->MovePC(151, 185, -835, 4, 390); # Bazaar Safe Location.
     }
 
-    if (!$client->IsTaskCompleted(3) && !$client->IsTaskActive(3)) {
-        $client->AssignTask(3);
-    } elsif ($client->IsTaskCompleted(3) && (!$client->IsTaskCompleted(4) && !$client->IsTaskActive(4))) {
-        $client->AssignTask(4);
+    if (!IsHardcore()) {
+        if (!$client->IsTaskCompleted(3) && !$client->IsTaskActive(3)) {
+            $client->AssignTask(3);
+        } elsif ($client->IsTaskCompleted(3) && (!$client->IsTaskCompleted(4) && !$client->IsTaskActive(4))) {
+            $client->AssignTask(4);
+        }
     }
 
     my $entity_list = plugin::val('$entity_list');

@@ -23,12 +23,14 @@ sub CommonCharacterUpdate {
             $client->KeyRingAdd(22198);
         }
 
-        if ($client->IsTaskActivityActive(3, 5) && $client->GetLevel() >= 5) {
-            $client->UpdateTaskActivity(3, 5, 1);
-        }
+        if (!IsHardcore()) {
+            if ($client->IsTaskActivityActive(3, 5) && $client->GetLevel() >= 5) {
+                $client->UpdateTaskActivity(3, 5, 1);
+            }
 
-        if ($client->IsTaskActivityActive(4, 3) && $client->GetLevel() >= 50) {
-            $client->UpdateTaskActivity(4, 3, 1);
+            if ($client->IsTaskActivityActive(4, 3) && $client->GetLevel() >= 50) {
+                $client->UpdateTaskActivity(4, 3, 1);
+            }
         }
 
         my @skip_ids = (69, 68, 65, 64, 63, 61, 60, 59, 58, 57, 56, 55);
