@@ -23,7 +23,7 @@ sub CommonCharacterUpdate {
             $client->KeyRingAdd(22198);
         }
 
-        if (!IsHardcore()) {
+        if ($client->!IsHardcore()) {
             if ($client->IsTaskActivityActive(3, 5) && $client->GetLevel() >= 5) {
                 $client->UpdateTaskActivity(3, 5, 1);
             }
