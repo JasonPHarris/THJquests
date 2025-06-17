@@ -85,11 +85,7 @@ sub handle_death {
 
 sub update_character_max_level {
     my $client = shift;
-    my $CharMaxLevel = 51;
-
-    if (plugin::IsTHJ()) {
-        $CharMaxLevel = 50;
-    }
+    my $CharMaxLevel = 50;
 
     if ($client->IsProgressionFlagUnlocked('RoK')) {
         $CharMaxLevel = 60;
@@ -101,7 +97,8 @@ sub update_character_max_level {
         $CharMaxLevel = 70;
     }
 
-    my $current_cap = $client->GetBucket("CharMaxLevel") || 0;
+    my $current_cap = $client->GetBucket("CharMaxLevel") || 50;
+
     if ($current_cap != $CharMaxLevel) {
         $client->SetBucket("CharMaxLevel", $CharMaxLevel);        
         plugin::YellowText("Your Level Cap has been set to $CharMaxLevel.");
