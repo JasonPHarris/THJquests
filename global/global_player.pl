@@ -112,7 +112,7 @@ sub EVENT_CONNECT {
         quest::settimer("first-login", 5);
     }
 
-    if (plugin::MultiClassingEnabled()) {
+    if (!$client->IsHardcore()) {
         if (!$client->IsTaskCompleted(3) && !$client->IsTaskActive(3)) {
             $client->AssignTask(3);
         } elsif ($client->IsTaskCompleted(3) && (!$client->IsTaskCompleted(4) && !$client->IsTaskActive(4))) {
@@ -480,9 +480,6 @@ sub EVENT_CAST_BEGIN {
 }
 
 sub EVENT_SAY {
-    my $is_hardcore = $client->IsHardcore();
-    my $is_solo = $client->IsSolo();
-    my $is_self_found = $client->IsSelfFound();
     if ($client->GetGM()) {
         if ($text=~/#awardtitle\s*(.*)/i) {
             $client->Message(13, "Disregard the command not recognized error.");
