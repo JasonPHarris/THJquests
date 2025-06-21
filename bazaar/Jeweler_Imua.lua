@@ -49,9 +49,11 @@ good_list = {
 };
 
 function say_price(e)
-  --TODO: Do SSF check here
-  e.other:Message(MT.NPCQuestSay, "Jeweler Imua says 'A hardy adventurer such as yourself, with access to friends and tradesmen, I would ask the sum of 2000 platinum coins for my services.")
-   --e.other:Message(MT.NPCQuestSay, "Jeweler Imua says 'For such a brave adventurer, facing this world of danger all alone, I would ask only the amount of 200 platinum coins to complete the work.")
+  if e.other:IsSelfFound() then
+   e.other:Message(MT.NPCQuestSay, "Jeweler Imua says 'For such a brave adventurer, facing this world of danger all alone, I would ask only the amount of 200 platinum coins to complete the work.")
+  else
+    e.other:Message(MT.NPCQuestSay, "Jeweler Imua says 'A hardy adventurer such as yourself, with access to friends and tradesmen, I would ask the sum of 2000 platinum coins for my services.")
+  end
 end
 
 function event_say(e)
@@ -75,8 +77,10 @@ end
 
 function event_trade(e)
   local item_lib = require("items")
-  -- TODO: If SSF, set this to 200 plat
   local cost = 2000;
+  if e.other:IsSelfFound() then
+    cost = 200
+  end
   local item_list = {
     [task_ids.enchanted_platinum_bar] = {item1 = 16503, platinum = cost},
     [task_ids.enchanted_silver_bar] = {item1 = 16500, platinum = cost},
