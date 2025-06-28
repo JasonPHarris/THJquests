@@ -620,9 +620,13 @@ sub UpdateCharMaxLevel
     my $update = 0;
     my $CharMaxLevel = $client->GetBucket("CharMaxLevel") || 51;
 
+    quest::debug("Check 1: $CharMaxLevel");
+
     if (plugin::IsTHJ()) {
         $CharMaxLevel = $client->GetBucket("CharMaxLevel") || 50;
     }
+
+    quest::debug("Check 2: $CharMaxLevel");
 
     if (plugin::IsSeasonal($client)) {
         $CharMaxLevel = 51;
@@ -651,6 +655,8 @@ sub UpdateCharMaxLevel
             $CharMaxLevel = 70;
         } 
     }
+
+    quest::debug("Check 3: $CharMaxLevel");
 
     if (($client->GetBucket("CharMaxLevel") || 0) != $CharMaxLevel) {
         $client->SetBucket("CharMaxlevel", $CharMaxLevel);        
