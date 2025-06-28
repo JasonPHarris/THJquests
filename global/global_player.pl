@@ -543,6 +543,7 @@ sub EVENT_CAST_BEGIN {
 
 sub EVENT_SAY {
     if ($client->GetGM()) {
+        plugin::UpdateCharMaxLevel();
         if ($text=~/#awardtitle\s*(.*)/i) {
             $client->Message(13, "Disregard the command not recognized error.");
             my $arguments = $1; # Captures everything after #awardtitle
