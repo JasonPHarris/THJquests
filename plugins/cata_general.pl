@@ -241,15 +241,13 @@ sub transform_item {
         attuned       => 1,
     };
     
-    $client->AddItem($item_data);
+    $client->AddItem($item_data);    
     
-    if ($new_slot_id >= 0) {
-        for my $i (0..5) {
-            if ($augments[$i] > 0) {
-                $client->SummonFixedItem($augments[$i], 1, 1);
-            }
+    for my $i (0..5) {
+        if ($augments[$i] > 0) {
+            $client->SummonFixedItem($augments[$i], 1, 1);
         }
-    }
+    }    
     
     return $dst_item;
 }
