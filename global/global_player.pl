@@ -396,21 +396,24 @@ sub EVENT_ITEM_CLICK_CAST_CLIENT {
         return;
     }
 
+
     if ($spell_id == 36878) {
         if (plugin::HasTitle($item_id)) {
             $client->Message(289, "You already have that title, and cannot claim it again.");
         } else {
             plugin::AddTitleFlag($item_id, $client);
+        }
 	}
+
+    if ($spell_id == 1823 || $spell_id == 1824 || $spell_id == 26508) {
+        plugin::transform_item($client, $item_id, $slot_id, \%SWAP_ITEM_MAP, 0);
     }
-    elsif ($spell_id == 36874) {
-    	my $swapped = plugin::transform_item($client, $item_id, $slot_id, \%SWAP_ITEM_MAP, 0);
     
-    	if (!$swapped && $spell_id == 36874) {
-        	plugin::transform_item($client, $item_id, $slot_id, \%CYCLE_ITEM_MAP, 1);
-    	}
+    if ($spell_id == 36874) {
+        plugin::transform_item($client, $item_id, $slot_id, \%CYCLE_ITEM_MAP, 1);    	
     }
-    elsif ($spell_id == 36936) {
+
+    if ($spell_id == 36936) {
         @task_ids = ();
 	my @spell_map = ([128, 78, 4872],
 			 [16384, 79, 4875],
